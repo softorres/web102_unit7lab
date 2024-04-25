@@ -1,6 +1,8 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import './EditPost.css'
+import {useState} from 'react' 
+import { supabase } from '../client';
 
 const EditPost = ({data}) => {
 
@@ -17,6 +19,26 @@ const EditPost = ({data}) => {
         })
     }
 
+    // UPDATE post
+    const updatePost = async (event) => {
+        event.preventDefault();
+  
+        await supabase
+        .from('Posts')
+        .update({ title: post.title, author: post.author,  description: post.description})
+        .eq('id', id);
+  
+        window.location = "/";
+  }
+     const deletePost = async (event) => {
+        event.preventDefault();
+        await supabase
+        .from('Posts')
+        .delete()
+        .eq('id', id); 
+  
+        window.location = "http://localhost:3000/";
+  }
     return (
         <div>
             <form>
@@ -29,11 +51,11 @@ const EditPost = ({data}) => {
                 <br/>
 
                 <label for="description">Description</label><br />
-                <textarea rows="5" cols="50" id="description" value={post.description} onChange={handleChange} >
+                <textarea rows="5" cols="50" id="description" name="description" value={post.description} onChange={handleChange} >
                 </textarea>
                 <br/>
-                <input type="submit" value="Submit" />
-                <button className="deleteButton">Delete</button>
+                <input type="submit" value="Submit" onClick={updatePost}/>
+                <button className="deleteButton"onClick={deletePost}>Delete </button>
             </form>
         </div>
     )
